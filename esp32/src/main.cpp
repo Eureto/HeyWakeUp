@@ -1,18 +1,7 @@
 
 #include <Arduino.h>
-
-/*
- * This ESP32 code is created by esp32io.com
- *
- * This ESP32 code is released in the public domain
- *
- * For more detail (instruction and wiring diagram), visit https://esp32io.com/tutorials/esp32-light-sensor
- */
-
-#define LIGHT_SENSOR_PIN 34 // ESP32 pin GIOP36 (ADC0)
-
+#define LIGHT_SENSOR_PIN 34 // ESP32 pin GIOP34 (ADC0)
 void setup() {
-  // initialize serial communication at 9600 bits per second:
   Serial.begin(115200);
 }
 
@@ -36,5 +25,5 @@ void loop() {
     Serial.println(" => Very bright");
   }
 
-  delay(50);
+  delay(500);
 }
