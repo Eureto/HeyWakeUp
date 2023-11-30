@@ -9,3 +9,9 @@ ESP32:
 React: 
  - ...
 
+
+To do 
+esp32: 
+-
+React: 
+- integration with alarm clock
