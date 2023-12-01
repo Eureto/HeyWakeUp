@@ -1,17 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import React from 'react';
+// import DateTimePicker from '@react-native-community/datetimepicker';
+
 let val;
 export default function App() {
-  const [val, onChangeText] = React.useState('Useless Multiline Placeholder');
   return (
     <View style={styles.container}>
-      <Text style={{color: 'blue'}}>This is my text lol</Text>
       <StatusBar style="auto" />
       <TextInput 
-                  style={{width: 200, height: 100,  borderWidth:3, borderColor: 'black',}}
+                  style={{fontSize:40,width: 200, height: 100,  borderWidth:3, borderColor: 'black',padding: 20}}
                   value={val}
-                  onChangeText = {val => onChangeText(val)} />
+                  inputMode='numeric'
+                  keyboardType='numeric'
+     />
+    
+      
+    
     </View>
   );
 }
