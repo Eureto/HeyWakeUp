@@ -7,11 +7,15 @@ ESP32:
  - reading light sensor 
 
 React: 
- - ...
+ - input box 
 
 
 To do 
 esp32: 
--
+- web socket to receive clock alarm 
+- turning on and off led 
+- dimming led 
+- integration with heater 
 React: 
-- integration with alarm clock
+- setting the clock alarm 
+- sending information to esp 
