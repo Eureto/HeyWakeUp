@@ -16,10 +16,10 @@ export default function App() {
                   maxLength={2}                
                   onChangeText={text => setMyText(text)}
      />
-                    <Text onPress = {() => setMyText("My Changed Text")}>
+                    <Text>
                             {myText}
                     </Text>
-     
+                    
     
      <TextInput 
                   style={styles.timeInput}
