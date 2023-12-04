@@ -15,7 +15,8 @@ esp32:
 - web socket to receive clock alarm 
 - turning on and off led 
 - dimming led 
-- integration with heater 
+- integration with app
+ 
 React: 
 - setting the clock alarm 
 - sending information to esp 
