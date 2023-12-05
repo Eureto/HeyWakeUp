@@ -17,7 +17,7 @@ export default function App() {
                   onChangeText={text => setMyText(text)}
      />
                     <Text>
-                            {myText}
+                            {myText}{" "}:{" "}
                     </Text>
                     
     
