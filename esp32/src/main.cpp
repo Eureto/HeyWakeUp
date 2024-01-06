@@ -48,35 +48,52 @@ WiFi.begin(ssid, password);
   Serial.print("ESP32 Web Server's IP address: ");
   Serial.println(WiFi.localIP());
 
-server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    Serial.println("ESP32 Web Server: New request received:");
-    Serial.println("GET /");
-    request->send(200, "text/html", getHTML());
-  });
+// server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+//     Serial.println("ESP32 Web Server: New request received:");
+//     Serial.println("GET /");
+//     request->send(200, "text/html", getHTML());
+//   });
 
- server.on("/led1/on", HTTP_GET, [](AsyncWebServerRequest *request) {
-    Serial.println("ESP32 Web Server: New request received:");
-    Serial.println("GET /led1/on");
-    led_state = HIGH;
-    digitalWrite(LED_PIN, led_state);
-    request->send(200, "text/html", getHTML());
-  });
-  server.on("/led1/off", HTTP_GET, [](AsyncWebServerRequest *request) {
-    Serial.println("ESP32 Web Server: New request received:");
-    Serial.println("GET /led1/off");
-    led_state = LOW;
-    digitalWrite(LED_PIN, led_state);
-    request->send(200, "text/html", getHTML());
-  });
-   server.on("/led1/off", HTTP_GET, [](AsyncWebServerRequest *request) {
-    Serial.println("ESP32 Web Server: New request received:");
-    Serial.println("GET /led1/off");
-    led_state = LOW;
-    digitalWrite(LED_PIN, led_state);
-    request->send(200, "text/html", getHTML());
-  });
+//  server.on("/led1/on", HTTP_GET, [](AsyncWebServerRequest *request) {
+//     Serial.println("ESP32 Web Server: New request received:");
+//     Serial.println("GET /led1/on");
+//     led_state = HIGH;
+//     digitalWrite(LED_PIN, led_state);
+//     request->send(200, "text/html", getHTML());
+//   });
+//   server.on("/led1/off", HTTP_GET, [](AsyncWebServerRequest *request) {
+//     Serial.println("ESP32 Web Server: New request received:");
+//     Serial.println("GET /led1/off");
+//     led_state = LOW;
+//     digitalWrite(LED_PIN, led_state);
+//     request->send(200, "text/html", getHTML());
+//   });
+//    server.on("/led1/off", HTTP_GET, [](AsyncWebServerRequest *request) {
+//     Serial.println("ESP32 Web Server: New request received:");
+//     Serial.println("GET /led1/off");
+//     led_state = LOW;
+//     digitalWrite(LED_PIN, led_state);
+//     request->send(200, "text/html", getHTML());
+//   });
 
-
+// Handling parameters in URL https://techtutorialsx.com/2017/12/17/esp32-arduino-http-server-getting-query-parameters/
+server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+ 
+    int paramsNr = request->params();
+    Serial.println(paramsNr);
+ 
+    for(int i=0;i<paramsNr;i++){
+ 
+        AsyncWebParameter* p = request->getParam(i);
+        Serial.print("Param name: ");
+        Serial.println(p->name());
+        Serial.print("Param value: ");
+        Serial.println(p->value());
+        Serial.println("------");
+    }
+ 
+    request->send(200, "text/plain", "message received");
+  });
   // Start the server
   server.begin();
 
