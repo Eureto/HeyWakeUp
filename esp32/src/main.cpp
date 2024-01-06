@@ -5,6 +5,12 @@
 
 const char *ssid = "";
 const char *password = "";
+// Static IP configuration
+IPAddress staticIP(192, 168, 0, 100); // ESP32 static IP
+IPAddress gateway(192, 168, 0, 1);    // IP Address of your network gateway (router)
+IPAddress subnet(255, 255, 255, 0);   // Subnet mask
+IPAddress primaryDNS(192, 168, 0, 1); // Primary DNS (optional)
+IPAddress secondaryDNS(0, 0, 0, 0);   // Secondary DNS (optional)
 
 AsyncWebServer server(80);
 int led_state = LOW;
@@ -45,6 +51,12 @@ WiFi.begin(ssid, password);
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
+  // Configuring static IP
+  if(!WiFi.config(staticIP, gateway, subnet, primaryDNS, secondaryDNS)) {
+    Serial.println("Failed to configure Static IP");
+  } else {
+    Serial.println("Static IP configured!");
+  }
   Serial.print("ESP32 Web Server's IP address: ");
   Serial.println(WiFi.localIP());
 
