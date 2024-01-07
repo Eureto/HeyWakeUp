@@ -4,11 +4,10 @@ The program i installed on my esp32 and phone to help me wake up in winter when 
 To do 
 
 esp32: 
-- web socket to receive clock alarm 
-- turning on and off led 
-- dimming led 
-- integration with app
+ - write function that process inputed time 
+ 
  
 React: 
-- sending time to esp and  
+- switch focus on enter press in time input 
+- add input for how long shoul led be on   
 

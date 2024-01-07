@@ -60,37 +60,10 @@ WiFi.begin(ssid, password);
   Serial.print("ESP32 Web Server's IP address: ");
   Serial.println(WiFi.localIP());
 
-// server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-//     Serial.println("ESP32 Web Server: New request received:");
-//     Serial.println("GET /");
-//     request->send(200, "text/html", getHTML());
-//   });
-
-//  server.on("/led1/on", HTTP_GET, [](AsyncWebServerRequest *request) {
-//     Serial.println("ESP32 Web Server: New request received:");
-//     Serial.println("GET /led1/on");
-//     led_state = HIGH;
-//     digitalWrite(LED_PIN, led_state);
-//     request->send(200, "text/html", getHTML());
-//   });
-//   server.on("/led1/off", HTTP_GET, [](AsyncWebServerRequest *request) {
-//     Serial.println("ESP32 Web Server: New request received:");
-//     Serial.println("GET /led1/off");
-//     led_state = LOW;
-//     digitalWrite(LED_PIN, led_state);
-//     request->send(200, "text/html", getHTML());
-//   });
-//    server.on("/led1/off", HTTP_GET, [](AsyncWebServerRequest *request) {
-//     Serial.println("ESP32 Web Server: New request received:");
-//     Serial.println("GET /led1/off");
-//     led_state = LOW;
-//     digitalWrite(LED_PIN, led_state);
-//     request->send(200, "text/html", getHTML());
-//   });
-
 // Handling parameters in URL https://techtutorialsx.com/2017/12/17/esp32-arduino-http-server-getting-query-parameters/
 server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
  
+    int hour, minute;
     int paramsNr = request->params();
     Serial.println(paramsNr);
  
@@ -99,12 +72,17 @@ server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
         AsyncWebParameter* p = request->getParam(i);
         Serial.print("Param name: ");
         Serial.println(p->name());
+        if(p->name() == "hour"){
+          hour = p->value().toInt();
+        }else if(p->name() == "minute"){
+          minute = p->value().toInt();
+        }
         Serial.print("Param value: ");
         Serial.println(p->value());
         Serial.println("------");
     }
- 
-    request->send(200, "text/plain", "message received");
+    // you have to send hour and minutes to function that handles it 
+    request->send(200, "text/plain", "ok");
   });
   // Start the server
   server.begin();
@@ -150,16 +128,6 @@ void loop() {
 //      Serial.println(brightness);
 
 
-
-//  digitalWrite(5, HIGH);
-//      Serial.println("HIGH");
-
-//   delay(1300);
-
-//  digitalWrite(5, LOW);
-//      Serial.println("LOW");
-
-  // delay(3);
 
 
 

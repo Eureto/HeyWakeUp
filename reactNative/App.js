@@ -13,7 +13,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.HourContainer}>
-        <StatusBar style="auto" />
+        <StatusBar style="light-content" />
         <TextInput
           ref={input => { this.textInputHours = input }}
           style={styles.timeInput}
@@ -39,6 +39,7 @@ export default function App() {
           }
         />
         <Text style={styles.text}> : </Text>
+        {/* on enter press it should focus on minutes input  */}
         <TextInput
           ref={input => { this.textInputMinutes = input }}
           style={styles.timeInput}
@@ -63,9 +64,10 @@ export default function App() {
           }}
         />
       </View>
+      {/* // add a input for how long before should be light on  */}
       <View style={styles.container}>
         <Button
-          onPress={() => sendItToEsp("asdf",Hour,Minutes)}
+          onPress={() => sendItToEsp("192.168.0.100",Hour,Minutes)}
           title="Send it"
           color={'#000000'}
         />

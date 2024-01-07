@@ -1,14 +1,12 @@
 export function sendItToEsp(url, hour, minutes) {
-    console.log(hour);
-    fetch('https://asd.comz/', {
-  method: 'POST',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  }, body: JSON.stringify({
-    firstParam: 'yourValue',
-    secondParam: 'yourOtherValue',
-  }),
-});
-   
+  console.log(url, hour, minutes);
+  url = "http://" + url + "/?hour=" + hour + "&minutes=" + minutes;
+  fetch(url, {
+    method: 'GET'
+  }).then((response) => response.text())
+    .then((data) => {
+      if (data == "ok") {
+        console.log("ok");
+      }
+    });
 }
