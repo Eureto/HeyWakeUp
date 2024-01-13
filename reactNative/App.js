@@ -22,7 +22,7 @@ export default function App() {
           maxLength={2}
           textAlign={'center'}
           onChangeText={text => {
-            if (text > 24 || text < 0) {
+            if (text >= 24 || text < 0) {
               Alert.alert('Godzina', 'Wartość jest z poza zakresu', [
                 {
                   text: 'OK', onPress: () => {

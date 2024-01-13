@@ -1,8 +1,28 @@
 
 #include <Arduino.h>
-#include <WiFi.h>
 #include <ESPAsyncWebServer.h>
+#include <string>
+#include <time.h>
+const char *ntpServer = "0.pl.pool.ntp.org";
+const long gmtOffset_sec = 3600;
+const int daylightOffset_sec = 3600;
+#define uS_TO_Minutes_FACTOR 60000000 /* Conversion factor for micro seconds to minutes */
 
+int LocalTime()
+{
+  struct tm timeinfo;
+  if (!getLocalTime(&timeinfo))
+  {
+    Serial.println("Failed to obtain time");
+    return 0;
+  }
+  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+  int time = timeinfo.tm_hour * 100 + timeinfo.tm_min;
+  Serial.println("time: " + String(time));
+  return time;
+}
+
+#include <WiFi.h>
 const char *ssid = "";
 const char *password = "";
 // Static IP configuration
@@ -15,11 +35,39 @@ IPAddress secondaryDNS(0, 0, 0, 0);   // Secondary DNS (optional)
 AsyncWebServer server(80);
 int led_state = LOW;
 
-#define LIGHT_SENSOR_PIN 34 
-#define LED_PIN 5 
+#define LIGHT_SENSOR_PIN 34
+#define LED_PIN 5
+  int difTimeMinutes = 0;
 
+void setLedState(int hour, int minutes, int timeAhead)
+{
+  int localTime = LocalTime();
+  int localMinutes = localTime % 100;
+  int localHour = localTime / 100;
+  Serial.println("lokalna godizina " + String(localHour));
+  Serial.println("lokalna minuta " + String(localMinutes));
+  Serial.println("___________");
+  Serial.println("ustawiona godzina " + String(hour));
+  Serial.println("ustawiona minuta " + String(minutes));
 
-String getHTML() {
+  if (hour >= localHour)
+  {
+    difTimeMinutes = (hour - localHour) * 60 + minutes - localMinutes;
+  }
+  else
+  {
+    difTimeMinutes = (24 - localHour) * 60 + hour * 60 + minutes - localMinutes;
+  }
+  Serial.println("diftimeminutes: " + String(difTimeMinutes));
+  esp_sleep_enable_timer_wakeup(difTimeMinutes * uS_TO_Minutes_FACTOR);
+  Serial.println("Setup ESP32 to sleep for every " + String(difTimeMinutes) +
+                 " minutes");
+  esp_light_sleep_start();
+  Serial.println("sie wybudzilem");
+}
+
+String getHTML()
+{
   String html = "<!DOCTYPE HTML>";
   html += "<html>";
   html += "<head>";
@@ -41,27 +89,37 @@ String getHTML() {
   return html;
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   pinMode(5, OUTPUT);
 
-WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+  Serial.print("czas dif: "+String(difTimeMinutes));
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(1000);
     Serial.println("Connecting to WiFi...");
   }
   Serial.println("Connected to WiFi");
   // Configuring static IP
-  if(!WiFi.config(staticIP, gateway, subnet, primaryDNS, secondaryDNS)) {
+  if (!WiFi.config(staticIP, gateway, subnet, primaryDNS, secondaryDNS))
+  {
     Serial.println("Failed to configure Static IP");
-  } else {
+  }
+  else
+  {
     Serial.println("Static IP configured!");
   }
   Serial.print("ESP32 Web Server's IP address: ");
   Serial.println(WiFi.localIP());
 
-// Handling parameters in URL https://techtutorialsx.com/2017/12/17/esp32-arduino-http-server-getting-query-parameters/
-server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  int asf = LocalTime();
+
+  // Handling parameters in URL https://techtutorialsx.com/2017/12/17/esp32-arduino-http-server-getting-query-parameters/
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
  
     int hour, minute;
     int paramsNr = request->params();
@@ -74,22 +132,21 @@ server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
         Serial.println(p->name());
         if(p->name() == "hour"){
           hour = p->value().toInt();
-        }else if(p->name() == "minute"){
+        }else if(p->name() == "minutes"){
           minute = p->value().toInt();
         }
         Serial.print("Param value: ");
         Serial.println(p->value());
         Serial.println("------");
     }
-    // you have to send hour and minutes to function that handles it 
     request->send(200, "text/plain", "ok");
-  });
+    setLedState(hour, minute, 0); });
   // Start the server
   server.begin();
-
 }
- int brightness{0};
-void loop() {
+int brightness{0};
+void loop()
+{
   // reads the input on analog pin (value between 0 and 4095)
   // int analogValue = analogRead(LIGHT_SENSOR_PIN);
 
@@ -119,16 +176,10 @@ void loop() {
   //   // digitalWrite(26, LOW);
   //   analogWrite(26, 0);
   // }
- 
 
-//     analogWrite(5, brightness);
-// brightness++;
-// if ( brightness >= 255) {
-//     brightness = 0;}
-//      Serial.println(brightness);
-
-
-
-
-
+  //     analogWrite(5, brightness);
+  // brightness++;
+  // if ( brightness >= 255) {
+  //     brightness = 0;}
+  //      Serial.println(brightness);
 }
